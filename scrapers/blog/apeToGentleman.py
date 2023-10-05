@@ -87,12 +87,11 @@ for i, ele in enumerate(elements, 1):
                 sub['title'] = tag.text
                 sub['author'] = author
                 sub['date'] = ""
-            else:
-                if tag.tag_name == "p":
-                    sub['text'].append(tag.text)
+            elif tag.tag_name == "p":
+                sub['text'].append(tag.text)
 
-                elif tag.tag_name == "img":
-                    sub['images'].append(tag.get_attribute("src"))
+            elif tag.tag_name == "img":
+                sub['images'].append(tag.get_attribute("src"))
 
         sub['text'] = " ".join(sub['text'])
         data[str(k)] = dict(sub)

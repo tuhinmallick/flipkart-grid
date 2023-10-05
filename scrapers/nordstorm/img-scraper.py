@@ -44,6 +44,7 @@ with open("nordstrom_links.json", 'r') as file:
     inp = json.load(file);
 
 extraction = {}
+ratings = ''
 for category in inp:
     extraction[category] = []
     products = inp[category]
@@ -61,7 +62,6 @@ for category in inp:
         print(pid)
 
         stars = ''
-        ratings = ''
         price = ''
         images = []
         product_name = ""
@@ -86,12 +86,13 @@ for category in inp:
         except:
             print('no price found')
 
-#get the image url
-        imageUrls = []
         images_li = driver.find_elements_by_class_name('BIgNz')
-        for images in images_li:
-            imageUrls.append(images.find_elements_by_class_name('_3fwsO')[0].get_attribute('src'))
-
+        imageUrls = [
+            images.find_elements_by_class_name('_3fwsO')[0].get_attribute(
+                'src'
+            )
+            for images in images_li
+        ]
         download_image(imageUrls, category, pid)
 
 #get the product name

@@ -30,9 +30,7 @@ def objpredict():
     incolour = request.json["incolour"]
     outcolour = request.json["outcolour"]
     print(img);
-    #cvimg = readb64(img)
-    res = changeColourAPI(img, incolour, outcolour)
-    return res
+    return changeColourAPI(img, incolour, outcolour)
 
 
 if __name__ == "__main__":

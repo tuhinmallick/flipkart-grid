@@ -11,7 +11,7 @@ inp_file = inp_dir + inp_name + inp_extension
 
 out_color = "none" # None to just crop the picture
 out_dir = "./output/"
-out_name = inp_name + "_out"
+out_name = f"{inp_name}_out"
 out_extension = inp_extension
 
 out_file_cut = out_dir + out_name + out_extension
@@ -39,21 +39,21 @@ output_img = hsv.copy()
 output_img[np.where(mask==0)] = 0
 """
 
-if(inp_color == "red"):
-    lower = np.array([155,25,0])
-    upper = np.array([179,255,255])
-
-if(inp_color == "black"):
+if inp_color == "black":
     lower = np.array([0,0,0])
     upper = np.array([180, 255, 50])
 
-if(inp_color == "blue"):
+elif inp_color == "blue":
     lower = np.array([94, 80, 2])
     upper = np.array([126, 255, 255])
 
-if(inp_color == "green"):
+elif inp_color == "green":
     lower = np.array([25, 52, 72])
     upper = np.array([102, 255, 255])
+
+elif inp_color == "red":
+    lower = np.array([155,25,0])
+    upper = np.array([179,255,255])
 
 mask = cv2.inRange(hsv, lower, upper)
 output_img = im.copy()

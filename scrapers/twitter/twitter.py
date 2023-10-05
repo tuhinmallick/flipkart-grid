@@ -19,13 +19,7 @@ def authenticate():
 def twitter_client(num, twitter_user=None):
     auth = authenticate()
     client_handler = API(auth)
-    tweets = []
-    for tweet in Cursor(client_handler.user_timeline, id=twitter_user).items(num):
-        tweets.append(tweet)
-
-    # for tweet in tweepy.Cursor(api.search,q="#unitedAIRLINES",count=100,
-    #                            lang="en",
-    return tweets
+    return list(Cursor(client_handler.user_timeline, id=twitter_user).items(num))
 
 
 fashion_handles = ['FASHlONABLE', 'SHEIN_official', 'VogueParis', 'Refinery29',
@@ -54,10 +48,10 @@ for handle in fashion_handles:
         obj = {}
         json_str = tweet._json
         try:
-            urls = []
-            for twt in (json_str['extended_entities']['media']):
-                urls.append(twt['media_url'])
-            if not urls == []:
+            if urls := [
+                twt['media_url']
+                for twt in json_str['extended_entities']['media']
+            ]:
                 download_image(urls, handle, json_str['id'])
                 obj['id'] = json_str['id']
                 obj['favorite_count'] = json_str['favorite_count']

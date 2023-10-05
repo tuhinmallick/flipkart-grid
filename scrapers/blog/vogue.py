@@ -96,7 +96,6 @@ for i, ele in enumerate(elements, 1):
                 time.sleep(1)
             except:
                 print("error")
-                pass
             if not imgs:
                 imgs = img.get_attribute("src")
             obj["images"].append(imgs)
