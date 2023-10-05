@@ -28,7 +28,7 @@ for i in range(len(urls)):
         try:
             #url = "https://www.nordstrom.com/browse/men/trend/clothing?breadcrumb=Home%2FMen%2F" + category + "&page=" + str(pageno)
             url = urls[i]
-            url = url + "&page=" + str(pageno)
+            url = f"{url}&page={str(pageno)}"
 
             #url = "file:///data/Projects/flipkart/flipkart-gird/scrapers/flipkart/test.html"
             print(url)

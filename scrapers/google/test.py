@@ -40,8 +40,9 @@ for i in range(4):
             if src != None:
                 src = str(src)
                 print(src)
-                urllib.request.urlretrieve(src, os.path.join(
-                    'downloads', 'image' + str(num) + '.jpg'))
+                urllib.request.urlretrieve(
+                    src, os.path.join('downloads', f'image{str(num)}.jpg')
+                )
             else:
                 raise TypeError
         except:

@@ -54,18 +54,18 @@ def facedetection(image):
 
     # construct a list of bounding boxes from the detection
     drects = [(int(x), int(y), int(x + w), int(y + h)) for (x, y, w, h) in drects]
-    
+
     # Ignore false faces since multiple faces are detected on certain images
     height,width = img_gray.shape
     drects.sort(key=lambda x:x[1],reverse=False)
-    if len(drects)>0:
-       rects = drects[:1]
-       lx,ly,rx,ry = rects[0]
-       if ry>height/2 or np.var( img_gray[ly:ry,lx:rx])<1:
-          rects = [] 
+    if drects:
+        rects = drects[:1]
+        lx,ly,rx,ry = rects[0]
+        if ry>height/2 or np.var( img_gray[ly:ry,lx:rx])<1:
+           rects = []
     else:
-       rects = []
- 
+        rects = []
+
     return rects
 
 def findbound(img):
@@ -92,8 +92,7 @@ def findbound(img):
            bottom = i
            break
 
-    bound = [(top,bottom,left,right)]
-    return bound
+    return [(top,bottom,left,right)]
 
 def filterboundarea(img, bvalue, svalue, rect):
     top,bottom,left,right = rect
@@ -112,9 +111,7 @@ def filterboundarea(img, bvalue, svalue, rect):
            if img_gray[y,x] < svalue+50 and img_gray[y,x]>svalue-50:
               mask[y,x] = 0
 
-    fimg = img*mask[:,:,np.newaxis]
-
-    return fimg
+    return img*mask[:,:,np.newaxis]
 
 def backgroundmodel(img,rect):
     top,bottom,left,right = rect
@@ -123,9 +120,7 @@ def backgroundmodel(img,rect):
     mask = np.ones(img.shape[:2],np.uint8)
     mask[top:bottom,left:right]=0
     img_gray = img_gray*mask
-    bvalue = np.median(img_gray[img_gray>0])
-
-    return bvalue
+    return np.median(img_gray[img_gray>0])
 
 def skinmodel(img,rect):
     startX,startY,endX,endY = rect
@@ -152,19 +147,15 @@ def removebackground(image,rects):
 
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5,5))
     dilated = cv2.dilate(edged, kernel, iterations = 3)
-    
+
     # Find the bound area
     boundrect = findbound(dilated)
 
     # Get the background RGB model
     bvalue = backgroundmodel(image, boundrect[0])
-    
-    # Get the skin model
-    if len(rects)>0:
-       svalue = skinmodel(image,rects[0])
-    else:
-       svalue = np.nan
 
+    # Get the skin model
+    svalue = skinmodel(image,rects[0]) if len(rects)>0 else np.nan
     # Exclude face area
     if len(rects)>0:
         lx,ly,rx,ry = rects[0]
@@ -172,28 +163,26 @@ def removebackground(image,rects):
         boundrect=[]
         boundrect = [(ry,bottom,left,right)]
 
-    # Filter out background in bounded area
-    rgimg = filterboundarea(image, bvalue, svalue, boundrect[0])
-    return rgimg
+    return filterboundarea(image, bvalue, svalue, boundrect[0])
 
 def extractobj(filepath):
     try:
         image = cv2.imread(filepath)
-        filename = filepath.split('/')[-1] 
-        dotidx = filename.index('.') 
+        filename = filepath.split('/')[-1]
+        dotidx = filename.index('.')
         new_filename = OUT_PATH + filename[:dotidx] + "_cut.png" #+ filename[dotidx:]
-        if(os.path.isfile(new_filename)):
-          print(new_filename + " already exists... Skipping...")
-          return
-        
+        if (os.path.isfile(new_filename)):
+            print(f"{new_filename} already exists... Skipping...")
+            return
+
         print(new_filename)
-    
+
         # face detection 
         rects = facedetection(image)
 
         # detect and remove background
         fimg = removebackground(image,rects)
-    
+
         cv2.imwrite(new_filename,fimg)
     except:
         print("Failed for this object")

@@ -199,66 +199,66 @@ with open("links.json", 'r') as file:
     inp = json.load(file);
 
 extraction = {}
+ratings = ''
 for category in inp:
-    extraction[category] = []
-    products = inp[category]
-    for product in products:
+  extraction[category] = []
+  products = inp[category]
+  for product in products:
     #for i in range(5):
-        url = product
-        print(url)
-        parsed = urlparse.urlparse(url)
+    url = product
+    print(url)
+    parsed = urlparse.urlparse(url)
 
-        pid = parse_qs(parsed.query)['pid'][0];
-        ratings = ''
-        stars = ''
-        images = []
+    pid = parse_qs(parsed.query)['pid'][0];
+    stars = ''
+    images = []
 
-        driver.get(url);
+    driver.get(url);
 
 #get the element containing stars
-        stars = driver.find_elements_by_class_name('bqXGTW')
+    stars = driver.find_elements_by_class_name('bqXGTW')
 
 #get the element containing rating
-        rating = driver.find_elements_by_class_name('_38sUEc')
+    rating = driver.find_elements_by_class_name('_38sUEc')
 
 #get the element containing price 
-        price = driver.find_elements_by_class_name('_3qQ9m1')
+    price = driver.find_elements_by_class_name('_3qQ9m1')
 
 #get the image url
-        imageUrls = []
-        try:
-          imageUrls.append(driver.find_elements_by_class_name('_3wp706')[0].get_attribute('src'))
-          download_image(imageUrls, category, pid)
-        except:
-          print('not possible for this image')
+    imageUrls = []
+    try:
+      imageUrls.append(driver.find_elements_by_class_name('_3wp706')[0].get_attribute('src'))
+      download_image(imageUrls, category, pid)
+    except:
+      print('not possible for this image')
 
-        obj = {}
-        try:
-            obj['pid'] = pid
-        except:
-            obj['pid'] = None
+    obj = {}
+    try:
+        obj['pid'] = pid
+    except:
+        obj['pid'] = None
 
-        try:
-            obj['stars'] = stars[0].text
-        except:
-            obj['stars'] = None
+    try:
+        obj['stars'] = stars[0].text
+    except:
+        obj['stars'] = None
 
-        try:
-            obj['rating'] = rating[0].text
-        except:
-            obj['rating'] = None 
+    try:
+        obj['rating'] = rating[0].text
+    except:
+        obj['rating'] = None 
 
-        try:
-            obj['price'] = price[0].text
-        except:
-            obj['price'] = None 
+    try:
+        obj['price'] = price[0].text
+    except:
+        obj['price'] = None 
 
-        extraction[category].append(obj)
-        print(pid)
-        print(obj['stars'])
-        print(obj['rating'])
-        print(obj['price'])
-        print(imageUrls)
+    extraction[category].append(obj)
+    print(pid)
+    print(obj['stars'])
+    print(obj['rating'])
+    print(obj['price'])
+    print(imageUrls)
 
 
 with open("dump.json", 'w') as file:

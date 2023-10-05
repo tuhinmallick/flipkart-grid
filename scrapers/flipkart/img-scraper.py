@@ -33,6 +33,7 @@ with open("links.json", 'r') as file:
     inp = json.load(file);
 
 extraction = {}
+ratings = ''
 for category in inp:
     extraction[category] = []
     products = inp[category]
@@ -43,7 +44,6 @@ for category in inp:
         parsed = urlparse.urlparse(url)
 
         pid = parse_qs(parsed.query)['pid'][0];
-        ratings = ''
         stars = ''
         images = []
 
@@ -59,8 +59,11 @@ for category in inp:
         price = driver.find_elements_by_class_name('_3qQ9m1')
 
 #get the image url
-        imageUrls = []
-        imageUrls.append(driver.find_elements_by_class_name('_3wp706')[0].get_attribute('src'))
+        imageUrls = [
+            driver.find_elements_by_class_name('_3wp706')[0].get_attribute(
+                'src'
+            )
+        ]
         download_image(imageUrls, category, pid)
 
         obj = {}
